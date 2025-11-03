@@ -10,7 +10,7 @@ struct ListNode_ {
 typedef struct ListNode_ ListNode;
 
 // List
-typedef struct List_ {
+typedef struct {
     unsigned int size;
     ListNode* head;
     ListNode* tail;
