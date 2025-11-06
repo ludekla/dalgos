@@ -7,12 +7,13 @@ void list_init(List* list, void (*purge)(void* data)) {
     list->size = 0;
     list->head = list->tail = NULL;
     list->purge = purge;
+    list->match = NULL;
 }
 
-int list_insert(List* list, ListNode* node, const void* data) {
+int list_insert(List* list, Node* node, const void* data) {
     // allocate memory for a new node
-    ListNode* new_node;
-    if ((new_node = (ListNode*)malloc(sizeof(ListNode))) == NULL) {
+    Node* new_node;
+    if ((new_node = (Node*)malloc(sizeof(Node))) == NULL) {
         return -1;
     }
     new_node->data = (void*)data;
@@ -21,7 +22,7 @@ int list_insert(List* list, ListNode* node, const void* data) {
         new_node->next = list->head;
         list->head = new_node;
     } else {
-        // node is pointing to a ListNode
+        // node is pointing to a Node
         new_node->next = node->next; 
         node->next = new_node;
     }
@@ -32,8 +33,8 @@ int list_insert(List* list, ListNode* node, const void* data) {
     return 0;
 }
 
-int list_remove(List* list, ListNode* node, void** data) {
-    ListNode* old_node;
+int list_remove(List* list, Node* node, void** data) {
+    Node* old_node;
     if (list_size(list) == 0 || node == list->tail)
         return -1;
     if (node == NULL) {
