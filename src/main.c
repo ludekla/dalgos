@@ -1,42 +1,46 @@
 #include <stdio.h>
 
 #include "ch05_list.h"
-#include "ch06_stack.h"
+#include "ch06_event.h"
+#include "ch06_queue.h"
 
-void purge(void* v) {
-    int* p = (int*)v;
-    printf("Not really purging: %d\n", *p);
+void dispatch(Event* event) {
+    switch (event->type) {
+        case BREAKFAST:
+            printf("Having %s for breakfast ...\n", event->food);
+            break;
+        case LUNCH:
+            printf("Having %s for lunch ...\n", event->food);
+            break;
+        case SUPPER:
+            printf("Having %s for supper ...\n", event->food);
+    }
 }
 
 int main() {
 
-    Stack stack;
+    Queue queue;
 
-    stack_init(&stack, purge);
+    queue_init(&queue, NULL);
    
-    int a[3] = {0, 1, 2};
+    EventType events[3] = {BREAKFAST, LUNCH, SUPPER};
+    char* food[3] = {"porridge", "miso soup", "bread & butter"};
 
-    
+    // enqueue events
     for (int i = 0; i < 3; i++) {
-        int size = stack_size(&stack);
-        printf("Stack size before push: %u\n", size);
-        stack_push(&stack, a + i);
-        printf("Stack size after push: %u\n", stack_size(&stack));
-    }
-    
-    int* data;
-    
-    if ((data = (int*)stack_peek(&stack)) != NULL)
-        printf("Peek: %d\n", *data); 
-    
-    while ((stack_pop(&stack, (void**)&data) == 0)) {
-        int size = stack_size(&stack);
-        printf("Successfully popped: %d (size now: %u)\n", *data, size);
-        if ((data = (int*)stack_peek(&stack)) != NULL)
-            printf("Peek: %d\n", *data); 
+        Event event;
+        event_init(&event, events[i], food[i]); 
+        if (receive_event(&queue, &event) != 0)
+            printf("WARNING: cannot enqueue event %d\n", i);
     }
 
-    stack_clear(&stack);
+    // dequeue and process
+    while (queue_size(&queue) > 0) {
+        if (process_event(&queue, dispatch) != 0)
+            printf("Failed to dispatch event\n");
+    }
+
+    queue_clear(&queue);
 
     return 0;
 }
