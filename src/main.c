@@ -23,7 +23,7 @@ int main() {
 
     queue_init(&queue, NULL);
    
-    EventType events[3] = {BREAKFAST, LUNCH, SUPPER};
+    event_t events[3] = {BREAKFAST, LUNCH, SUPPER};
     char* food[3] = {"porridge", "miso soup", "bread & butter"};
 
     // enqueue events

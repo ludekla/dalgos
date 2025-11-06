@@ -4,7 +4,7 @@
 #include "ch06_queue.h"
 #include "ch06_event.h"
 
-void event_init(Event* event, EventType type, char* food) {
+void event_init(Event* event, event_t type, char* food) {
     event->type = type;
     event->food = food;
 }

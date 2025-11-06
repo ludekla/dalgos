@@ -7,14 +7,14 @@ typedef enum {
     BREAKFAST,
     LUNCH,
     SUPPER
-} EventType;
+} event_t;
 
 typedef struct {
-    EventType type;
+    event_t type;
     char* food;
 } Event;
 
-void event_init(Event* event, EventType type, char* food);
+void event_init(Event* event, event_t type, char* food);
 
 int receive_event(Queue* queue, const Event* event);
 
