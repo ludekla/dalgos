@@ -1,9 +1,10 @@
 CMD = main
 DIR = src
+LDIR = src/p02_data
 LIB_A = ch05_list
 LIB_B = ch07_set
 LIB_C = ch07_cover
-INC = -I include
+INC = -I include/p02_data
 
 bin/main: bin/main.o bin/$(LIB_A).o bin/$(LIB_B).o bin/$(LIB_C).o
 	gcc -o $@ $^
@@ -11,13 +12,13 @@ bin/main: bin/main.o bin/$(LIB_A).o bin/$(LIB_B).o bin/$(LIB_C).o
 bin/main.o: $(DIR)/$(CMD).c
 	gcc -o $@ $(INC) -c $^
 
-bin/$(LIB_A).o: src/$(LIB_A).c
+bin/$(LIB_A).o: $(LDIR)/$(LIB_A).c
 	gcc -o $@ $(INC) -c $^
 
-bin/$(LIB_B).o: src/$(LIB_B).c
+bin/$(LIB_B).o: $(LDIR)/$(LIB_B).c
 	gcc -o $@ $(INC) -c $^
 
-bin/$(LIB_C).o: src/$(LIB_C).c
+bin/$(LIB_C).o: $(LDIR)/$(LIB_C).c
 	gcc -o $@ $(INC) -c $^
 
 clean:

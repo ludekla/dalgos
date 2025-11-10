@@ -5,6 +5,6 @@
 
 int best_subset(Set* set, Set* subsets, Set** best);
 
-int min_cover(Set* set, Set* subsets, Set* cover);
+int greedy_cover(Set* set, Set* subsets, Set* cover);
 
 #endif

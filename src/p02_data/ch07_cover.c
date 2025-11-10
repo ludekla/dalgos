@@ -27,7 +27,7 @@ int best_subset(Set* set, Set* subsets, Set** best) {
     return 0;
 }
 
-int min_cover(Set* set, Set* subsets, Set* cover) {
+int greedy_cover(Set* set, Set* subsets, Set* cover) {
     set_init(cover, subsets->match, NULL);
     Set* best_set;
     while (set_size(set) > 0) {
@@ -35,7 +35,9 @@ int min_cover(Set* set, Set* subsets, Set* cover) {
             return -1;
         // remove every element of the set in best_set
         for (Node* run = best_set->head; run; run = run->next) {
-            set_remove(set, &run->data);
+            if (set_remove(set, &run->data) == 0 && set->purge != NULL) {
+                set->purge(run->data);
+            }
         }
         // add best_set to the cover
         if (set_insert(cover, best_set) != 0)
