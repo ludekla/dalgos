@@ -1,56 +1,38 @@
 #include <stdio.h>
-#include <math.h>
 
-#include "ch08_chtable.h"
+#include "ch08_ohtable.h"
 
 int match_ints(const void* data1, const void* data2) {
     return *(int*)data1 == *(int*)data2;
 }
 
-int hashf(const void* key) {
+int hashf_1(void* key) {
     int* p = (int*)key;
     int coding = *p * 1699 + 3; 
     return coding;
 }
 
-void list_print(List* list) {
-    printf("Bucket { ");
-    for (Node* run = list->head; run; run = run->next)
-        printf("%d ", *((int*)run->data));
-    printf("}\n");
+int hashf_2(void* key) {
+    int* p = (int*)key;
+    int coding = *p * 123 + 4; 
+    return coding;
 }
 
-void chtable_print(CHTable* tb) {
-    int n_buckets = tb->n_buckets;
-    printf("Hash Table %d {\n", tb->size);
-    for (int i = 0; i < n_buckets; i++) {
-        printf("%2d ", i + 1);
-        list_print(tb->buckets + i);
+void ohtable_print(OHTable* tb) {
+    printf("Hash Table [size %02d] {\n", tb->size);
+    for (int i = 0; i < tb->n_positions; i++) {
+        printf("%2d:", i + 1);
+        if (tb->table[i])
+            printf("%d ", *(int*)tb->table[i]);
+        else
+            printf("- ");
     }
-    printf("}\n");
+    printf("\n}\n");
 }
 
-int main() {
-
-    int a[12] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11};
-
-    CHTable tb;
-    chtable_init(&tb, 10, hashf, match_ints, NULL);
-
-    for (int i = 0; i < 12; i++) {
-        chtable_insert(&tb, a + i);
-    }
-    chtable_print(&tb);
-    printf("Delete 7\n");
-    chtable_remove(&tb, a + 7);
-    chtable_print(&tb);
-    printf("Delete 1\n");
-    chtable_remove(&tb, a + 1);
-    chtable_print(&tb);
-    printf("Try to insert 2\n");
-    int r = chtable_insert(&tb, a + 2);
-    printf("Response r: %d (meaning: ", r);
-    switch (r) {
+void print_insert_response(int response) {
+    printf("Response r: %d (meaning: ", response);
+    switch (response) {
         case 0:
             printf("Insertion Success)\n");
             break;
@@ -60,10 +42,51 @@ int main() {
         case -1:
             printf("Insertion Failure, sth went wrong)\n");
     }
-    chtable_print(&tb);
+}
+
+int main() {
+
+    int a[12] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11};
+
+
+    OHTable tb;
+    ohtable_init(&tb, 15, hashf_1, hashf_2, match_ints, NULL);
+
+    for (int i = 0; i < 12; i++) {
+        ohtable_insert(&tb, a + i);
+    }
+
+    ohtable_print(&tb);
+
+    void* data;
     
+    printf("Delete 7\n");
+    data = a + 7;
+    ohtable_remove(&tb, &data);
+    ohtable_print(&tb);
+    
+    printf("Delete 1\n");
+    data = a + 1;
+    ohtable_remove(&tb, &data);
+    ohtable_print(&tb);
+    
+    printf("Try to insert 2\n");
+    int r = ohtable_insert(&tb, a + 2);
+    print_insert_response(r);
+
+    printf("Try to insert 7\n");
+    r = ohtable_insert(&tb, a + 7);
+    print_insert_response(r);
+
+    ohtable_print(&tb);
+  
+    printf("Look up 6: ");
+    data = a + 6;
+    r = ohtable_lookup(&tb, &data);
+    printf("response is %d (0 success, -1 failure)\n", r);
+
     // clean up
-    chtable_clear(&tb);
+    ohtable_clear(&tb);
 
     return 0;
 }
