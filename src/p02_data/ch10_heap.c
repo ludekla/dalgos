@@ -1,5 +1,6 @@
 #include <stdlib.h>  // NULL
 #include <string.h> // memset
+#include <stdarg.h> // variadic macros
 
 #include "ch10_heap.h"
 
@@ -52,20 +53,18 @@ int heap_insert(Heap* heap, const void* data) {
     return 0;
 }
 
-// helpers
-static int max3_pos(Heap* heap, int i, int j, int k) {
-    int mpos = i;
-    if (heap->compare(heap->tree[j], heap->tree[mpos]) > 0)
-        mpos = j;
-    if (heap->compare(heap->tree[k], heap->tree[mpos]) > 0)
-        mpos = k;
-    return mpos;
-}
-
-static int max2_pos(Heap* heap, int i, int j) {
-    if (heap->compare(heap->tree[i], heap->tree[j]) > 0)
-        return i;
-    return j;
+// helper
+static int max_pos(Heap* heap, int n, ...) {
+    va_list argptr;
+    va_start(argptr, n);
+    int m = va_arg(argptr, int);
+    int j;
+    for (int i = 1; i < n; i++) {
+        j = va_arg(argptr, int);
+        if (heap->compare(heap->tree[j], heap->tree[m]) > 0)
+            m = j;
+    }
+    return m;
 }
 
 int heap_extract(Heap* heap, void** data) {
@@ -81,10 +80,10 @@ int heap_extract(Heap* heap, void** data) {
     int mpos;
     while (lpos < heap_size(heap)) { 
         // find index of maximum element
-        if (rpos == heap_size(heap))
-            mpos = max2_pos(heap, ipos, lpos);
+        if (rpos < heap_size(heap)) 
+            mpos = max_pos(heap, 3, ipos, lpos, rpos); 
         else
-            mpos = max3_pos(heap, ipos, lpos, rpos);
+            mpos = max_pos(heap, 2, ipos, lpos);
         if (mpos == ipos)
             break;
         swap_em(heap, mpos, ipos);

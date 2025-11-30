@@ -1,8 +1,7 @@
 CMD = main
 DIR = src
 LDIR = src/p02_data
-#LIB_A = ch08_list
-LIB_A = ch08_ohtable
+LIB_A = ch10_heap
 #LF = -lm # library flag for math.h
 INC = -I include/p02_data
 
