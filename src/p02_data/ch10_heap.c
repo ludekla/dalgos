@@ -1,6 +1,7 @@
 #include <stdlib.h>  // NULL
 #include <string.h> // memset
 #include <stdarg.h> // variadic macros
+#include <stdio.h>
 
 #include "ch10_heap.h"
 
@@ -74,6 +75,7 @@ int heap_extract(Heap* heap, void** data) {
     *data = heap->tree[0];
     // overwrite top position with last element
     heap->tree[0] = heap->tree[heap_size(heap) - 1];
+    heap->tree[heap_size(heap) - 1] = NULL; 
     heap->size--;
     // Go and heapify if need be
     int ipos = 0, lpos = 1, rpos = 2;

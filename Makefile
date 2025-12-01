@@ -2,10 +2,11 @@ CMD = main
 DIR = src
 LDIR = src/p02_data
 LIB_A = ch10_heap
+LIB_B = ch10_parcel
 #LF = -lm # library flag for math.h
 INC = -I include/p02_data
 
-bin/main: bin/main.o bin/$(LIB_A).o # bin/$(LIB_B).o
+bin/main: bin/main.o bin/$(LIB_A).o bin/$(LIB_B).o
 	gcc -o $@ $^
 
 bin/main.o: $(DIR)/$(CMD).c
@@ -14,8 +15,8 @@ bin/main.o: $(DIR)/$(CMD).c
 bin/$(LIB_A).o: $(LDIR)/$(LIB_A).c
 	gcc -o $@ $(INC) -c $^
 
-#bin/$(LIB_B).o: $(LDIR)/$(LIB_B).c
-#	gcc -o $@ $(INC) -c $^
+bin/$(LIB_B).o: $(LDIR)/$(LIB_B).c
+	gcc -o $@ $(INC) -c $^
 
 clean:
 	rm bin/*

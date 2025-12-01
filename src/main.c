@@ -1,41 +1,48 @@
 #include <stdio.h>
 
-#include "ch10_heap.h"
+#include "ch10_parcel.h"
+#include "ch10_pqueue.h"
 
-int compare_ints(const void* data1, const void* data2) {
-    return *(int*)data1 - *(int*)data2;
-}
-
-void heap_print(Heap* hp) {
-    for (int i = 0; i < hp->size; i++)
-         printf(" %d", *(int*)hp->tree[i]);
-    printf("\n");
+int compare_parcels(const void* pc1, const void* pc2) {
+    return ((Parcel*)pc1)->id - ((Parcel*)pc2)->id; 
 }
 
 int main() {
 
-    int a[12] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11};
+    int ids[6] = {3, 4, 2, 1, 0, 5};
+    char* names[6] = {"Thomas", "Sarah", "Lutz", "Roland", "Hugh", "Milo"};
+    Parcel p[6];
 
-    Heap hp;
-    heap_init(&hp, compare_ints, NULL);
+    PQueue queue;
+    pqueue_init(&queue, compare_parcels, NULL);
 
-    for (int i = 0; i < 12; i++) {
-        heap_insert(&hp, a + i);
-        heap_print(&hp);
+    // Pack parcels and send them
+    printf("---------------\nSend Parcels\n---------------\n");
+    for (int i = 0; i < 6; i++) {
+        parcel_init(p + i, ids[i], names[i]); 
+        put_parcel(&queue, p + i);
+        printf("Dispatching ...\n");
+        parcel_print(p + i);
     }
 
-    heap_print(&hp);
+    // Receive them
+    printf("---------------\nReceive Parcels\n---------------\n");
 
-    int* p;
-    printf("Extract:\n");
-    for (int i = 0; i < 12; i++) {
-        heap_extract(&hp, (void**)&p);
-        printf(" %d", *p);
+    Parcel pcl;
+    while (pqueue_size(&queue) > 0) {
+        printf("Peek: ");
+        Parcel *pp = (Parcel*)pqueue_peek(&queue);
+        printf("parcel for %s, aha ...\n", parcel_who(pp));
+        printf("Unpacking parcel ...\n");
+        if (get_parcel(&queue, &pcl) != 0) {
+            printf("Error unpacking a parcel\n");
+            continue;
+        }
+        parcel_print(&pcl);
     }
-    printf("\n");
 
     // clean up
-    heap_clear(&hp);
+    pqueue_clear(&queue);
 
     return 0;
 }
