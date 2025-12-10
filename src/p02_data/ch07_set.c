@@ -7,7 +7,7 @@ void set_init(Set* set, match_fn match, purge_fn purge) {
     set->match = match;
 }
 
-int set_insert(Set* set, void* data) {
+int set_insert(Set* set, const void* data) {
     // go look whether the element is already present
     for (Node* run = set->head; run; run = run->next) {
         if (set_is_member(set, data))
@@ -79,7 +79,7 @@ int set_difference(Set* setd, const Set* set1, const Set* set2) {
 
 #define set_size(set) ((set)->size)
 
-int set_is_member(const Set* set, void* data) {
+int set_is_member(const Set* set, const void* data) {
     for (Node* run = set->head; run; run = run->next) {
          if (set->match(run->data, data))
             return 1;

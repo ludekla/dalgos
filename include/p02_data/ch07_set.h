@@ -5,9 +5,9 @@
 
 typedef List Set;
 
-void set_init(Set* set, match_fn match, purge_fn purge); 
+void set_init(Set* set, match_f match, purge_f purge); 
 
-int set_insert(Set* set, void* data);
+int set_insert(Set* set, const void* data);
 
 int set_remove(Set* set, void** data);
 
@@ -21,7 +21,7 @@ int set_difference(Set* setd, const Set* set1, const Set* set2);
 
 #define set_size(set) ((set)->size)
 
-int set_is_member(const Set* set, void* data);
+int set_is_member(const Set* set, const void* data);
 
 int set_is_subset(const Set* set1, const Set* set2); 
 

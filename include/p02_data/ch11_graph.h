@@ -1,22 +1,28 @@
 #ifndef GRAPH_H
 #define GRAPH_H
 
-#include "set.h"
+#include "ch07_set.h"
 
 typedef struct {
     void* data;
     Set adjacent;
 } Vertex;
 
+#define vertex_data(vertex) (((Vertex*)(vertex))->data)
+
+#define vertex_adjacent(vertex) (&((Vertex*)(vertex))->adjacent)
+
 typedef struct {
     int vcount;
     int ecount;
     List vertices;
-    compare_f compare;
+    match_f compare;
     purge_f purge;
 } Graph;
 
-void graph_init(Graph* graph, compare_f compare, purge_f purge);
+void graph_init(Graph* graph, match_f compare, purge_f purge);
+
+void graph_clear(Graph* graph);
 
 int graph_insert_vertex(Graph* graph, const void* data);
 
